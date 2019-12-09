@@ -31,13 +31,16 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+    	/**
+    	 * Event 도메인은 java Bean스펙을 준수하고 있기 때문에 serializable할 수 있지만 에러 객체는 할 수 없다.
+    	 */
     	if(errors.hasErrors()) {
-    		return ResponseEntity.badRequest().build();
+    		return ResponseEntity.badRequest().body(errors);
     	}
     	
     	eventValidator.validate(eventDto, errors);
     	if(errors.hasErrors()) {
-    		return ResponseEntity.badRequest().build();
+    		return ResponseEntity.badRequest().body(errors);
     	}
     	Event event = modelMapper.map(eventDto, Event.class);
         Event newEvent = this.eventRepository.save(event);
