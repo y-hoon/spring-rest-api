@@ -37,7 +37,8 @@ public class EventControllerTests {
     @MockBean
     EventRepository eventRepository;
 
-    @Ignore
+    @Test
+    @TestDescription("정상적으로 이벤트를 생성하는 테스트 ")
     public void createEvent() throws Exception {
     	Event event = Event.builder()
     			.id(100)
@@ -64,7 +65,8 @@ public class EventControllerTests {
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
     }
     
-    @Ignore
+    @Test
+    @TestDescription("정상적으로 값을 입력 받을 수 없는 경우 테스트")
     public void createEvent_Bad_Request() throws Exception {
     	Event event = Event.builder()
     			.id(100)
@@ -92,6 +94,7 @@ public class EventControllerTests {
     }
     
     @Test
+    @TestDescription("빈값이 들어오는 경우 테스트 ")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
     	EventDto eventDto = EventDto.builder().build();
     	
@@ -102,6 +105,7 @@ public class EventControllerTests {
     }
     
     @Test
+    @TestDescription("잘못된 값이 입력되는 경우 테스트")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
     	EventDto eventDto = EventDto.builder()
     			.name("Spring")
