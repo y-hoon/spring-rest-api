@@ -38,11 +38,11 @@ public class EventControllerTests {
     @MockBean
     EventRepository eventRepository;
 
-    @Ignore
+    @Test
     @TestDescription("정상적으로 이벤트를 생성하는 테스트 ")
     public void createEvent() throws Exception {
-    	Event event = Event.builder()
-    			.id(100)
+    	EventDto event = EventDto.builder()
+//    			.id(100)
     			.name("Spring")
     			.description("Rest API Development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2019, 12, 7, 22, 39))
@@ -61,9 +61,11 @@ public class EventControllerTests {
         		.content(objectMapper.writeValueAsString(event)))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("id").exists())
+//            .andExpect(jsonPath("id").exists())
             .andExpect(header().exists(HttpHeaders.LOCATION))
-            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+            .andExpect(jsonPath("free").value(false))
+            .andExpect(jsonPath("offline").value(true));
     }
     
     @Ignore
