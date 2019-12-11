@@ -26,8 +26,8 @@ import lombok.Setter;
 public class Event {
     
 	@Id @GeneratedValue
+	private Integer id;
     private String name;
-    private Integer id;
     private String description;
     private LocalDateTime beginEnrollmentDateTime;
     private LocalDateTime closeEnrollmentDateTime;

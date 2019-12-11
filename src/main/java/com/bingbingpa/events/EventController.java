@@ -1,13 +1,15 @@
 package com.bingbingpa.events;
 
-import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping(value = "/api/events", produces = MediaTypes.HAL_JSON_VALUE)
 public class EventController {
@@ -30,7 +35,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+    public ResponseEntity<?> createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
     	/**
     	 * Event 도메인은 java Bean스펙을 준수하고 있기 때문에 serializable할 수 있지만 에러 객체는 할 수 없다.
     	 */
@@ -43,11 +48,17 @@ public class EventController {
     		return ResponseEntity.badRequest().body(errors);
     	}
     	Event event = modelMapper.map(eventDto, Event.class);
-    	event.update();
+        event.update();
         Event newEvent = this.eventRepository.save(event);
-//        URI createUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
-        URI createUri = linkTo(EventController.class).toUri();
-//        eventDto.setId(10);
-        return ResponseEntity.created(createUri).body(event);
+        log.info("=========================================================={} ",newEvent);
+        
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
+        URI createdUri = selfLinkBuilder.toUri();
+        EventResource eventResource = new EventResource(event);
+        eventResource.add(linkTo(EventController.class).withRel("query-events"));
+        eventResource.add(selfLinkBuilder.withSelfRel());
+        eventResource.add(selfLinkBuilder.withRel("update-event"));
+        
+        return ResponseEntity.created(createdUri).body(eventResource);
     }
 }
