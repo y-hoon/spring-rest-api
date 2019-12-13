@@ -3,7 +3,6 @@ package com.bingbingpa.events;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.net.URI;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import ch.qos.logback.core.net.LoginAuthenticator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -50,15 +50,14 @@ public class EventController {
     	Event event = modelMapper.map(eventDto, Event.class);
         event.update();
         Event newEvent = this.eventRepository.save(event);
-        log.info("=========================================================={} ",newEvent);
-        
+        log.info("newEvent =================================== {} " , newEvent);
         WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
         URI createdUri = selfLinkBuilder.toUri();
-        EventResource eventResource = new EventResource(event);
-        eventResource.add(linkTo(EventController.class).withRel("query-events"));
-        eventResource.add(selfLinkBuilder.withSelfRel());
-        eventResource.add(selfLinkBuilder.withRel("update-event"));
+//        EventResource eventResource = new EventResource(event);
+//        eventResource.add(linkTo(EventController.class).withRel("query-events"));
+//        eventResource.add(selfLinkBuilder.withSelfRel());
+//        eventResource.add(selfLinkBuilder.withRel("update-event"));
         
-        return ResponseEntity.created(createdUri).body(eventResource);
+        return ResponseEntity.created(createdUri).body(newEvent);
     }
 }
