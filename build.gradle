@@ -23,6 +23,18 @@ ext {
 	set('snippetsDir', file("build/generated-snippets"))
 }
 
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+task copyDocument(type: Copy) {
+//bootJar {
+	dependsOn asciidoctor
+	from file("build/asciidoc/html5/")
+	into file("src/main/resources/static/docs")
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
@@ -33,6 +45,8 @@ dependencies {
 	//runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	compile 'com.h2database:h2'
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
+	
 	testImplementation('org.springframework.boot:spring-boot-starter-test') 
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
