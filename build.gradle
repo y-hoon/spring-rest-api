@@ -28,11 +28,9 @@ asciidoctor {
     dependsOn test
 }
 
-task copyDocument(type: Copy) {
-//bootJar {
-	dependsOn asciidoctor
+copy {
 	from file("build/asciidoc/html5/")
-	into file("src/main/resources/static/docs")
+	into file("src/main/resources/static/")
 }
 
 dependencies {
@@ -51,14 +49,4 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
 	
-}
-
-test {
-	outputs.dir snippetsDir
-	useJUnitPlatform()
-}
-
-asciidoctor {
-	inputs.dir snippetsDir
-	dependsOn test
 }
