@@ -23,14 +23,37 @@ ext {
 	set('snippetsDir', file("build/generated-snippets"))
 }
 
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
+test {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+	
+	ignoreFailures = true
 }
 
-copy {
-	from file("build/asciidoc/html5/")
-	into file("src/main/resources/static/")
+asciidoctor {
+	attributes 'snippets': snippetsDir
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+asciidoctor.doFirst {
+    println " @@@@@ start asciidoctor @@@@@ "
+    //asciidoctor 실행전 기존에 생성된 API 문서 삭제
+    delete file('src/main/resources/static/docs')
+}
+asciidoctor.doLast {
+    println " @@@@@ finish asciidoctor @@@@@ "
+}
+
+task copyDocument(type: Copy) {
+	println " @@@@@ copyDocument 실행 @@@@@ "
+    dependsOn asciidoctor
+    from file("build/asciidoc/html5/")
+    into file("src/main/resources/static/docs")  
+}
+
+build {
+    dependsOn copyDocument
 }
 
 dependencies {
@@ -43,7 +66,7 @@ dependencies {
 	//runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	compile 'com.h2database:h2'
-	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
+	//asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
 	
 	testImplementation('org.springframework.boot:spring-boot-starter-test') 
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'

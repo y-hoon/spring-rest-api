@@ -1,7 +1,5 @@
 ## gradle 환경에서 asciidoctor 사용하기
 
-- gradle build만 하면 html파일이 만들어 지지 않는다.  
-- gradle asciidoctor를 먼저 수행해야지 adoc파일 조각들이 빌드되어 html파일이 만들어진다. 
 - adoc파일 조각들에 정의한 index.adoc파일의 위치는 **src/main/docs/asciidoc**이 아니라 **src/docs/asciidoc**이 되어야 한다. 
 - 만약 해당 경로가 맞지 않다면 html파일이 만들어 지지 않는다. 
 - 정상적으로 빌드가 되었다면 build/asciidoc/html5 경로에 adoc파일 이름과 동일한 html 파일이 만들어 진다. 
