@@ -63,11 +63,10 @@ dependencies {
 	compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.5'
 	
 	compileOnly 'org.projectlombok:lombok'
-	//runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
-	compile 'com.h2database:h2'
-	//asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
 	
+	testImplementation 'com.h2database:h2'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') 
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
