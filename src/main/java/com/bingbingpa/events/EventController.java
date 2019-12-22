@@ -7,7 +7,6 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import ch.qos.logback.core.net.LoginAuthenticator;
+import com.bingbingpa.commns.ErrorResource;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -41,12 +41,12 @@ public class EventController {
     	 * Event 도메인은 java Bean스펙을 준수하고 있기 때문에 serializable할 수 있지만 에러 객체는 할 수 없다.
     	 */
     	if(errors.hasErrors()) {
-    		return ResponseEntity.badRequest().body(errors);
+    		return badRequest(errors);
     	}
     	
     	eventValidator.validate(eventDto, errors);
     	if(errors.hasErrors()) {
-    		return ResponseEntity.badRequest().body(errors);
+    		return badRequest(errors);
     	}
     	Event event = modelMapper.map(eventDto, Event.class);
         event.update();
@@ -62,5 +62,10 @@ public class EventController {
 //        eventResource.add(linkTo("/docs/index.html#resources-events-create").withRel("profile"));
         log.info("eventResource ========================== {} " , eventResource);
         return ResponseEntity.created(createdUri).body(eventResource);
+    }
+    
+    private ResponseEntity<?> badRequest(Errors errors) {
+    	return ResponseEntity.badRequest().body(new ErrorResource(errors));	
+    			
     }
 }
