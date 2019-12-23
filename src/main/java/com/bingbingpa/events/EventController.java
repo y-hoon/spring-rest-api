@@ -22,11 +22,13 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.bingbingpa.commns.ErrorResource;
 
+import lombok.experimental.PackagePrivate;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -90,6 +92,33 @@ public class EventController {
     	Event event = optionalEvent.get();
     	EventResource eventResource = new EventResource(event);
     	eventResource.add(new Link("/docs/index.html#resources-events-get").withRel("profile"));
+    	
+    	return ResponseEntity.ok(eventResource);
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatEvent(@PathVariable Integer id, @RequestBody @Valid EventDto eventDto,
+    									Errors errors) {
+    	Optional<Event> optionalEvent = this.eventRepository.findById(id);
+    	if (optionalEvent.isEmpty()) {
+    		return ResponseEntity.notFound().build();
+    	}
+    	
+    	if (errors.hasErrors()) {
+    		return badRequest(errors);
+    	}
+    	
+    	this.eventValidator.validate(eventDto, errors);
+    	if (errors.hasErrors()) {
+    		return badRequest(errors);
+    	}
+    	
+    	Event existingEvent = optionalEvent.get();
+    	this.modelMapper.map(eventDto, existingEvent);
+    	Event savedEvent = this.eventRepository.save(existingEvent);
+    	
+    	EventResource eventResource = new EventResource(savedEvent);
+    	eventResource.add(new Link("/docs/index.html#resources-events-update").withRel("profile"));
     	
     	return ResponseEntity.ok(eventResource);
     }
