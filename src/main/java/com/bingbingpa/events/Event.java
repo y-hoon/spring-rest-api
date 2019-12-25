@@ -7,6 +7,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import com.bingbingpa.accounts.Account;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,8 +44,9 @@ public class Event {
     private boolean offline;
     private boolean free;
     @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus;
-    
+    private EventStatus eventStatus = EventStatus.DRAFT;
+    @ManyToOne
+    private Account mangerAccount;
     // 간단한 비즈니스로직은 도메인에서 처리하는 것도 나쁘지 않다. 
     // 또는 서비스에 위임해서 분리하도록 하는 것이 좋다. 
     public void update() {

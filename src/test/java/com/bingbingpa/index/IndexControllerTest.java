@@ -25,6 +25,5 @@ public class IndexControllerTest extends BaseControllerTest {
 		this.mockMvc.perform(get("/api"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("_links.events").exists());
-		
 	}
 }
