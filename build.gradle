@@ -71,5 +71,8 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') 
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
+	// 스프링 시큐리티 테스트 httpBasic사용을 위한 디펜던시 
+	testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '5.2.1.RELEASE'
+	
 	
 }

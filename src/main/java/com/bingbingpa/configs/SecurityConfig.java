@@ -54,15 +54,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
 	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.anonymous()
-				.and()
-			.formLogin()
-				.and()
-			.authorizeRequests()
-				.mvcMatchers(HttpMethod.GET, "/api/**").authenticated()
-				.anyRequest().authenticated();
-	}
+	/**
+	 * 스프링 시큐리티 폼 인증 설정 
+	 */
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
+//		http
+//			.anonymous()
+//				.and()
+//			.formLogin()
+//				.and()
+//			.authorizeRequests()
+//				.mvcMatchers(HttpMethod.GET, "/api/**").authenticated()
+//				.anyRequest().authenticated();
+//	}
 }
