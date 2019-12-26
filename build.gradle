@@ -60,19 +60,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.5'
-	compile group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure', version: '2.2.2.RELEASE'
+	implementation 'org.modelmapper:modelmapper:2.3.6'
+	//AppProperties 파일에 변수 properties파일에 입력시 자동완성
+	implementation "org.springframework.boot:spring-boot-configuration-processor"
+	implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.2.2.RELEASE'
 	
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	
 	testImplementation 'com.h2database:h2'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') 
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
+	testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
 	// 스프링 시큐리티 테스트 httpBasic사용을 위한 디펜던시 
-	testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '5.2.1.RELEASE'
+	testImplementation 'org.springframework.security:spring-security-test:5.2.1.RELEASE'
 	
 	
 }
