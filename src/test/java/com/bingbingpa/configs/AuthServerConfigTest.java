@@ -45,7 +45,5 @@ public class AuthServerConfigTest extends BaseControllerTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("access_token").exists());
-				
-		
 	}
 }
