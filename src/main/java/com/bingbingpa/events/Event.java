@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.bingbingpa.accounts.Account;
+import com.bingbingpa.accounts.AccountSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,6 +48,7 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
     @ManyToOne
+    @JsonSerialize(using = AccountSerializer.class)
     private Account manger;
     // 간단한 비즈니스로직은 도메인에서 처리하는 것도 나쁘지 않다. 
     // 또는 서비스에 위임해서 분리하도록 하는 것이 좋다. 
