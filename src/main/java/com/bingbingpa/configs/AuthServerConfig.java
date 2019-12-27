@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import com.bingbingpa.accounts.AccountService;
+import com.bingbingpa.commns.AppProperties;
 
 @Configuration
 @EnableAuthorizationServer
@@ -29,6 +30,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 	@Autowired
 	TokenStore tokenStore;
 	
+	@Autowired
+	AppProperties appProperties;
+	
 	/**
 	 * 패스워드 설정
 	 */
@@ -41,10 +45,10 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		//TODO DB로 관리해야 한다. 
 		clients.inMemory()
-				.withClient("myApp")
+				.withClient(appProperties.getClientId())
 				.authorizedGrantTypes("password", "refresh_token")
 				.scopes("read", "write") //정의하기 나름 
-				.secret(this.passwordEncoder.encode("pass"))
+				.secret(this.passwordEncoder.encode(appProperties.getClientSecret()))
 				.accessTokenValiditySeconds(10 * 60)
 				.refreshTokenValiditySeconds(6 * 10 * 60);
 	}

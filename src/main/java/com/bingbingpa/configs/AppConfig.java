@@ -12,8 +12,10 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.bingbingpa.accounts.Account;
+import com.bingbingpa.accounts.AccountRepository;
 import com.bingbingpa.accounts.AccountRole;
 import com.bingbingpa.accounts.AccountService;
+import com.bingbingpa.commns.AppProperties;
 
 @Configuration
 public class AppConfig {
@@ -34,14 +36,25 @@ public class AppConfig {
 			
 			@Autowired
 			AccountService accountService;
+			
+			@Autowired
+			AppProperties appProperties;
+			
 			@Override
 			public void run(ApplicationArguments args) throws Exception {
-				Account account = Account.builder()
-						.email("guriguri1576@gmail.com")
-						.password("shpark")
+				Account admin = Account.builder()
+						.email(appProperties.getAdminUsername())
+						.password(appProperties.getAdminPassword())
 						.roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
 						.build();
-				accountService.saveAccount(account);
+				accountService.saveAccount(admin);
+				
+				Account user = Account.builder()
+						.email(appProperties.getUserUsername())
+						.password(appProperties.getUserPassword())
+						.roles(Set.of(AccountRole.USER))
+						.build();
+				accountService.saveAccount(user);
 						
 			}
 		};

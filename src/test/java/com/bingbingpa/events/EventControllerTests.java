@@ -36,6 +36,7 @@ import com.bingbingpa.accounts.Account;
 import com.bingbingpa.accounts.AccountRepository;
 import com.bingbingpa.accounts.AccountRole;
 import com.bingbingpa.accounts.AccountService;
+import com.bingbingpa.commns.AppProperties;
 import com.bingbingpa.commns.TestDescription;
 import com.bingbingpa.common.BaseControllerTest;
 
@@ -49,6 +50,9 @@ public class EventControllerTests extends BaseControllerTest {
     
     @Autowired
     AccountRepository accountRepository;
+    
+    @Autowired
+    AppProperties appProperties;
     
     /**
      * 단일 테스트에 대해서는 상관없지만 여러 테스트를 할경우 토큰을 받아올때 계속해서 동일 유저를 저장하므로 
@@ -363,21 +367,17 @@ public class EventControllerTests extends BaseControllerTest {
     
     private String getAccessToken() throws Exception {
 		// Given
-		String username = "guriguir1576@gmail.com";
-		String password = "shpark";
 		Account account = Account.builder()
-				.email(username)
-				.password(password)
+				.email(appProperties.getUserUsername())
+				.password(appProperties.getUserPassword())
 				.roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
 				.build();
 		this.accountService.saveAccount(account);
 		
-		String clientId = "myApp";
-		String clientSecret = "pass";
 		ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-					.with(httpBasic(clientId, clientSecret))
-					.param("username", username)
-					.param("password", password)
+					.with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+					.param("username", appProperties.getUserUsername())
+					.param("password", appProperties.getUserPassword())
 					.param("grant_type",  "password"));
 		String responseBody = perform.andReturn().getResponse().getContentAsString();
 		Jackson2JsonParser parser = new Jackson2JsonParser();
