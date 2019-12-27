@@ -46,7 +46,7 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
     @ManyToOne
-    private Account mangerAccount;
+    private Account manger;
     // 간단한 비즈니스로직은 도메인에서 처리하는 것도 나쁘지 않다. 
     // 또는 서비스에 위임해서 분리하도록 하는 것이 좋다. 
     public void update() {

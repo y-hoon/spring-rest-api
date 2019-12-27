@@ -16,6 +16,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -26,9 +27,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.bingbingpa.accounts.Account;
+import com.bingbingpa.accounts.CurrentUser;
 import com.bingbingpa.commns.ErrorResource;
 
-import lombok.experimental.PackagePrivate;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -47,7 +49,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+    public ResponseEntity<?> createEvent(@RequestBody @Valid EventDto eventDto, Errors errors, @CurrentUser Account account) {
     	/**
     	 * Event 도메인은 java Bean스펙을 준수하고 있기 때문에 serializable할 수 있지만 에러 객체는 할 수 없다.
     	 */
@@ -61,6 +63,7 @@ public class EventController {
     	}
     	Event event = modelMapper.map(eventDto, Event.class);
         event.update();
+        event.setManger(account); //이벤트의 매니저 설정 
         Event newEvent = this.eventRepository.save(event);
         
         // hateoas 링크 추가
@@ -75,15 +78,23 @@ public class EventController {
     }
     
     @GetMapping
-    public ResponseEntity<?> queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler) {
+	public ResponseEntity<?> queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler,
+			@CurrentUser Account account) {
+//    	Authentication authenticateAction = SecurityContextHolder.getContext().getAuthentication();
+//    	User principaUser = (User)authenticateAction.getPrincipal();
+    	
     	Page<Event> page = this.eventRepository.findAll(pageable);
     	PagedModel<EntityModel<Event>> pageResource = assembler.toModel(page, e -> new EventResource(e));
     	pageResource.add(new Link("/docs/index.html#resources-events-list").withRel("profile"));
+    	// 사용자 정보가 있을 경우에만 create-event링크 노출 
+    	if (account != null) {
+    		pageResource.add(linkTo(EventController.class).withRel("create-event"));
+    	}
     	return ResponseEntity.ok(pageResource);
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEvent(@PathVariable Integer id) {
+    public ResponseEntity<?> getEvent(@PathVariable Integer id, @CurrentUser Account account) {
     	Optional<Event> optionalEvent = this.eventRepository.findById(id);
     	if (optionalEvent.isEmpty()) {
     		return ResponseEntity.notFound().build();
@@ -92,13 +103,16 @@ public class EventController {
     	Event event = optionalEvent.get();
     	EventResource eventResource = new EventResource(event);
     	eventResource.add(new Link("/docs/index.html#resources-events-get").withRel("profile"));
-    	
+    	// 매니저인 경우에만 업데이트 이벤트 링크 노출 
+    	if (event.getManger().equals(account)) {
+    		eventResource.add(linkTo(EventController.class).slash(event.getId()).withRel("update-event"));
+    	}
     	return ResponseEntity.ok(eventResource);
     }
     
     @PutMapping("/{id}")
     public ResponseEntity<?> updatEvent(@PathVariable Integer id, @RequestBody @Valid EventDto eventDto,
-    									Errors errors) {
+    									Errors errors, @CurrentUser Account account) {
     	Optional<Event> optionalEvent = this.eventRepository.findById(id);
     	if (optionalEvent.isEmpty()) {
     		return ResponseEntity.notFound().build();
@@ -114,6 +128,9 @@ public class EventController {
     	}
     	
     	Event existingEvent = optionalEvent.get();
+    	if(!existingEvent.getManger().equals(account)) {
+    		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    	}
     	this.modelMapper.map(eventDto, existingEvent);
     	Event savedEvent = this.eventRepository.save(existingEvent);
     	
