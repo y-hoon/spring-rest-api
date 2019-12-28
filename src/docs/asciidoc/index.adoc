@@ -64,11 +64,7 @@
 
 에러 응답이 발생했을 때 (상태 코드 >= 400), 본문에 해당 문제를 기술한 JSON 객체가 담겨있다. 에러 객체는 다음의 구조를 따른다.
 
-include::{snippets}/errors/response-fields.adoc[]
-
-예를 들어, 잘못된 요청으로 이벤트를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받는다.
-
-include::{snippets}/errors/http-response.adoc[]
+include::{snippets}/create-event/response-fields.adoc[]
 
 [[overview-hypermedia]]
 == 하이퍼미디어
@@ -91,7 +87,9 @@ include::{snippets}/errors/http-response.adoc[]
 
 `GET` 요청을 사용하여 인덱스에 접근할 수 있다.
 
-operation::index[snippets='response-body,http-response,links']
+include::{snippets}/index/response-body.adoc[]
+include::{snippets}/index/http-response.adoc[]
+include::{snippets}/index/links.adoc[]
 
 [[resources-events]]
 == 이벤트
@@ -103,25 +101,35 @@ operation::index[snippets='response-body,http-response,links']
 
 `GET` 요청을 사용하여 서비스의 모든 이벤트를 조회할 수 있다.
 
-operation::get-events[snippets='response-fields,curl-request,http-response,links']
-snippets
+include::{snippets}/get-an-event/curl-request.adoc[]
+include::{snippets}/get-an-event/http-response.adoc[]
+
 [[resources-events-create]]
 === 이벤트 생성
 
 `POST` 요청을 사용해서 새 이벤트를 만들 수 있다.
 
-operation::create-event[snippets='request-fields,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
+include::{snippets}/create-event/request-fields.adoc[]
+include::{snippets}/create-event/curl-request.adoc[]
+include::{snippets}/create-event/http-request.adoc[]
+include::{snippets}/create-event/request-headers.adoc[]
+include::{snippets}/create-event/http-response.adoc[]
+include::{snippets}/create-event/response-headers.adoc[]
+include::{snippets}/create-event/response-fields.adoc[]
+include::{snippets}/create-event/links.adoc[]
 
 [[resources-events-get]]
 === 이벤트 조회
 
 `Get` 요청을 사용해서 기존 이벤트 하나를 조회할 수 있다.
 
-operation::get-event[snippets='request-fields,curl-request,http-response,links']
+include::{snippets}/get-an-event/curl-request.adoc[]
+include::{snippets}/get-an-event/http-response.adoc[]
 
 [[resources-events-update]]
 === 이벤트 수정
 
 `PUT` 요청을 사용해서 기존 이벤트를 수정할 수 있다.
 
-operation::update-event[snippets='request-fields,curl-request,http-response,links']
+include::{snippets}/update-event/curl-request.adoc[]
+include::{snippets}/update-event/http-response.adoc[]
