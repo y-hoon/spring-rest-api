@@ -1,25 +1,12 @@
 package com.bingbingpa.events;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
 import com.bingbingpa.accounts.Account;
 import com.bingbingpa.accounts.AccountSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * EqualsAndHashCode를 쓸때는 기본적으로 모든 필드를 가지고 하는데 만약에 다른 클래스와 연관 관계가 있을 경우 상호 참조 때문에
@@ -30,7 +17,8 @@ import lombok.ToString;
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Entity
 public class Event {
-    
+
+
 	@Id @GeneratedValue
 	private Integer id;
     private String name;
